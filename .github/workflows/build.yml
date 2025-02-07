@@ -20,6 +20,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '21'
+        distribution: 'temurin' # 这里指定 JDK 发行版
 
     - name: Build with Gradle
       run: ./gradlew build
