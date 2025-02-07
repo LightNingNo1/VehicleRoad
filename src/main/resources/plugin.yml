@@ -1,0 +1,28 @@
+name: Vehicle
+version: '1.0-SNAPSHOT'
+main: com.github.Light.vehicle.Vehicle
+api-version: '1.21'
+authors: [ Light ]
+description: 插件
+
+commands:
+  horsepipe:
+    description: 获取唤马竹筒
+    usage: /horsepipe
+    permission: horsepipe.give
+  givepill:
+    description: 给予坐骑提升丹药
+    usage: /givepill <player-name> <pill-type> <amount>
+    permission: givepills.use
+
+# 权限节点配置
+permissions:
+  horsepipe.use:
+    description: 允许使用唤马竹筒  # 使用唤马竹筒的权限
+    default: true                 # 默认所有玩家都有此权限
+  horsepipe.give:
+    description: 允许获取唤马竹筒
+    default: op
+  givepills.use:
+    description: 允许使用丹药给予命令
+    default: op
