@@ -2,6 +2,7 @@ package com.github.Light.vehicle;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
@@ -83,6 +84,7 @@ public class VehicleOnRoad implements Listener {
     private void displayVehicleStatus(Player player, LivingEntity vehicle, VehicleState state) {
         double speed = vehicle.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 43;
         double hunger = state.getHungerValue();
+        double speedMultiplier = ( state.getRoadSpeedMultiplier() + state.getHungerMultiplier() - 1.0 ) * 100 ;
         
         // 构建状态栏
         StringBuilder status = new StringBuilder();
@@ -103,7 +105,10 @@ public class VehicleOnRoad implements Listener {
               .append(ChatColor.GOLD).append(" 速度: ")
               .append(ChatColor.WHITE)
               .append(String.format("%.2f", speed))
-              .append(ChatColor.GOLD).append(" 格/秒");
+              .append(ChatColor.GOLD).append(" 格/秒 速度加成: ")
+              .append(ChatColor.WHITE)
+              .append(speedMultiplier > 0 ? "+" : "")
+              .append(String.format("%.0f",speedMultiplier) + " %");
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(status.toString()));
     }
@@ -352,6 +357,11 @@ public class VehicleOnRoad implements Listener {
 
         // 使用后消耗一个丹药
         pill.setAmount(pill.getAmount() - 1);
+
+
+        // 播放粒子效果
+        vehicle.getWorld().spawnParticle(Particle.ENCHANT,
+                vehicle.getLocation().add(0, 1, 0), 30);
         
         // 保存状态
         dataManager.saveVehicleState(vehicle, state);
@@ -369,16 +379,21 @@ public class VehicleOnRoad implements Listener {
         // 根据食物类型增加饥饿值
         if(vehicle instanceof Strider && food.getType() == Material.WARPED_FUNGUS) {
             state.feed(10.0, world);
+
+            // 播放粒子效果
+            vehicle.getWorld().spawnParticle(org.bukkit.Particle.HEART,
+                    vehicle.getLocation().add(0, 1, 0), 3);
+
         } else if(!(vehicle instanceof Strider)) {
             switch (food.getType()) {
                 case WHEAT -> state.feed(10.0, world);
                 case HAY_BLOCK -> state.feed(90.0, world);
             }
+            // 播放粒子效果
+            vehicle.getWorld().spawnParticle(org.bukkit.Particle.HEART,
+                    vehicle.getLocation().add(0, 1, 0), 3);
         }
 
-        // 播放粒子效果
-        vehicle.getWorld().spawnParticle(org.bukkit.Particle.HEART,
-                vehicle.getLocation().add(0, 1, 0), 3);
     }
 
     @EventHandler
@@ -390,6 +405,7 @@ public class VehicleOnRoad implements Listener {
         }
 
         World world = vehicle.getWorld();
+
 
         VehicleState state = initializeVehicleStateIfNeeded((LivingEntity) vehicle, world);
 

@@ -30,7 +30,7 @@ public class VehicleState {
         this.speedMultiplier = 1.0;
         this.baseSpeed = baseSpeed;
         this.hungerValue = 90.0; // 初始饥饿值
-        this.hungerMultiplier = 2.0; // 初始饥饿速度修正
+        this.hungerMultiplier = 0.151; // 初始饥饿速度修正
         this.lastFeedTime = world.getFullTime();
         this.consumptionMultiplier = 1.0;
     }

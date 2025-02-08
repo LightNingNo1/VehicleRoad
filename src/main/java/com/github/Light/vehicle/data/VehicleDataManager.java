@@ -32,6 +32,7 @@ public class VehicleDataManager {
         data.set(vehicleId + ".hungerValue", state.getHungerValue());
         data.set(vehicleId + ".lastFeedTime", state.getLastFeedTime());
         data.set(vehicleId + ".baseSpeed", state.getBaseSpeed());
+        data.set(vehicleId + ".consumptionMultiplier", state.getConsumptionMultiplier());
         data.set(vehicleId + ".baseHealthPillUses", state.getHealthPillUses());
         data.set(vehicleId + ".baseSpeedPillUses", state.getSpeedPillUses());
         data.set(vehicleId + ".baseJumpPillUses", state.getJumpPillUses());
@@ -64,10 +65,12 @@ public class VehicleDataManager {
         boolean speedUp = data.getBoolean(vehicleId + ".SpeedPillUses", false);
         boolean jumpUp = data.getBoolean(vehicleId + ".JumpPillUses", false);
         boolean hunger = data.getBoolean(vehicleId + ".HungerPillUses", false);
+        double consumptionMultiplier = data.getDouble(vehicleId + ".consumptionMultiplier", 1.0);
         double speed = data.getDouble(vehicleId + ".baseSpeed");
         
         VehicleState state = new VehicleState(speed, world);
         state.setStoredState(hungerValue, lastFeedTime);
+        state.setConsumptionMultiplier(consumptionMultiplier);
         state.setPillUses(speedPillUses, healthPillUses, jumpPillUses, hungerPillUses, speedUp, healthUp, jumpUp, hunger);
         
         return state;
