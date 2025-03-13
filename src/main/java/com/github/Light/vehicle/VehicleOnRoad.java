@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.ChatMessageType;
@@ -23,11 +24,7 @@ import com.github.Light.vehicle.data.VehicleDataManager;
 import com.github.Light.vehicle.items.Pills;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.EnumSet;
-import java.util.Random;
+import java.util.*;
 
 /**
  * 主要的事件处理类
@@ -73,12 +70,13 @@ public class VehicleOnRoad implements Listener {
         // 更新饥饿值
         state.updateHunger(player.getWorld());
         state.consumeHungerByDistance(distance);
+        // 处理移动速度
+        handleVehicleMovement((LivingEntity) vehicle);
 
         // 更新显示信息
         displayVehicleStatus(player, (LivingEntity)vehicle, state);
 
-        // 处理移动速度
-        handleVehicleMovement((LivingEntity) vehicle);
+
     }
 
     private void displayVehicleStatus(Player player, LivingEntity vehicle, VehicleState state) {
@@ -262,9 +260,21 @@ public class VehicleOnRoad implements Listener {
     private void handlePillUse(Player player, LivingEntity vehicle, ItemStack pill) {
 
         VehicleState state = initializeVehicleStateIfNeeded(vehicle, vehicle.getWorld());
+
+        ItemMeta meta = pill.getItemMeta();
+        if (meta == null || !meta.hasCustomModelData()) {
+            return;
+        }
+
+        int a = meta.getCustomModelData();
+        if (a != 76 && a != 77) {
+            return;
+        }
+
         String pillName = pill.getItemMeta().getDisplayName();
 
         Random random = new Random();
+
         
         if (pillName.contains(Pills.BASE_HEALTH_PILL)) {
             if (state.getHealthPillUses() >= 3) {
@@ -425,15 +435,16 @@ public class VehicleOnRoad implements Listener {
         if (vehicleStates.containsKey(vehicle)) {
             VehicleState state = vehicleStates.get(vehicle);
             state.updateHunger(vehicle.getWorld());
+            state.setHungerMultiplier(1.51);
             
             // 保存状态到文件
             dataManager.saveVehicleState(vehicle, state);
             
             // 下马时重置速度为基础值
-            if (vehicle instanceof LivingEntity livingEntity) {
-                livingEntity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)
+//            if (vehicle instanceof LivingEntity livingEntity) {
+            ((LivingEntity)vehicle).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)
                         .setBaseValue(state.getBaseSpeed());
-            }
+            //}
         }
     }
 

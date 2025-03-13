@@ -20,7 +20,7 @@ public class Pills {
     public static final String BASE_JUMP_PILL = "坐骑提升丹药-跳跃";
     public static final String BASE_HUNGER_CONS_PILL = "坐骑提升丹药-能耗";
     //高级
-    public static final String HEALTH_PILL = "强效坐骑提升丹药-生命";
+    public static final String HEALTH_PILL = "强效提升丹药-生命";
     public static final String SPEED_PILL = "强效提升丹药-速度";
     public static final String JUMP_PILL = "强效提升丹药-跳跃";
     public static final String HUNGER_CONS_PILL = "强效提升丹药-能耗";
